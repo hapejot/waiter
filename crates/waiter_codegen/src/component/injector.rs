@@ -174,11 +174,12 @@ impl Injector for PropInjector {
         base_types_extracted
             .or_else(|| {
                 if to_inject.prop_attr.is_some() {
-                    let type_name = to_inject.type_name.clone();
+                    // let type_name = to_inject.type_name.clone();
                     let type_path = to_inject.type_path.clone();
                     Some(quote::quote! {
-                        #container.config.clone().try_into::<#type_path>()
-                            .expect(format!("Can't parse config as '{}'", #type_name).as_str())
+                        // #container.config.clone().try_into::<#type_path>()
+                        //     .expect(format!("Can't parse config as '{}'", #type_name).as_str())
+                        #container.config.clone().try_deserialize::<#type_path>().unwrap()
                     })
                 } else {
                     None
@@ -250,7 +251,7 @@ impl PropExtractor for AsCastPropExtractor {
         match type_name.as_str() {
             "i64" => Some(quote::quote! { get_int }),
             "f64" | "f32" => Some(quote::quote! { get_float }),
-            "String" => Some(quote::quote! { get_str }),
+            "String" => Some(quote::quote! { get_string }),
             "bool" => Some(quote::quote! { get_bool }),
             _ => None
         }
